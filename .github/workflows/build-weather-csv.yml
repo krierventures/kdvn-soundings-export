@@ -1,0 +1,30 @@
+name: Build Weather CSV (KDVN 2020-2025)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run exporter (2020-01-01 to 2025-01-01)
+        run: |
+          python build_weather_csv_from_kdvn_soundings.py \
+            --start 2020-01-01 --end 2025-01-01 \
+            --outfile "exhaust plume weather data - lat 41.884694 lon -91.710806 - 2020-01-01 thru 2025-01-01.csv"
+
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kdvn-weather-2020-2025
+          path: "exhaust plume weather data - lat 41.884694 lon -91.710806 - 2020-01-01 thru 2025-01-01.csv"
+          if-no-files-found: error
